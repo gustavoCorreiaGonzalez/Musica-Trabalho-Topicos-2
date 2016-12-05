@@ -1,15 +1,15 @@
 import time, sys, os
 import numpy as np
-#import pygame
+import pygame
 
 instrumentos = {0:"cartoon001", 1:"cartoon012"}
 
 def toca_instrumento(instrumento):
-	# pygame.init()
-	# pygame.mixer.init()
-	# sound = pygame.mixer.Sound(instrumentos[instrumentos]+".wav")
-	# sound.play()
-	print(instrumentos[instrumentos])
+	pygame.init()
+	pygame.mixer.init()
+	pygame.mixer.music.load(instrumentos[int(instrumento)]+".wav")
+	pygame.mixer.music.play(0)
+	time.sleep(1)
 
 votos = {}
 

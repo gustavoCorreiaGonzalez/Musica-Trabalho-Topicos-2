@@ -2,14 +2,7 @@ import time, sys, os
 import numpy as np
 import pygame
 
-instrumentos = {0:"cartoon001", 1:"cartoon012"}
-
-def toca_instrumento(instrumento):
-	pygame.init()
-	pygame.mixer.init()
-	pygame.mixer.music.load(instrumentos[int(instrumento)]+".wav")
-	pygame.mixer.music.play(0)
-	time.sleep(1)
+instrumentos = {0:"cavaco", 1:"violao", 2:"chocalho"}
 
 votos = {}
 
@@ -17,45 +10,71 @@ votos = np.zeros(8)
 
 botao = ''
 
-i = 0
-while(i < 8):
-	print('Digite o numero do instrumento')
-	print('0. Violao parte 1')
-	print('1. Cavaco parte 1')
-	print('2. Mari cantando')
-	print('3. Piano')
-	print('4. Reco-Reco')
-	print('5. Chocalho')
-	print('6. Violao parte 2')
-	print('7. Cavaco parte 2')
-	botao = input()
+votacao_concluida = 0
 
-	os.system('cls' if os.name == 'nt' else 'clear')
+cavaco = None
+violao = None
+chocalho = None
 
-	if (int(botao) >= 1 and int(botao) <= 8):
-		votos[botao]+=1 
-		i+=1
+pygame.init()
+pygame.mixer.init()
+violao = pygame.mixer.Sound(instrumentos[1]+".ogg")
+cavaco = pygame.mixer.Sound(instrumentos[0]+".ogg")
+chocalho = pygame.mixer.Sound(instrumentos[2]+".ogg")
+violao.play()
+cavaco.play()
+chocalho.play()
+violao.set_volume(1)
+cavaco.set_volume(0)
+chocalho.set_volume(0)
 
-toca_instrumento(np.argmax(votos))
+def espera():
+	print('Votacao encerrada')
+	time.sleep(5)
+	print('Proxima votacao')
 
-# while key != ord('q'):
-# 	key = stdscr.getch()
-# 	stdscr.refresh()
+def votacao():
+	global votacao_concluida
 
-# 	if key == curses.KEY_LEFT:
-# 		pygame.init()
-# 		pygame.mixer.init()
-# 		sound = pygame.mixer.Sound("cartoon0121.wav")
-# 		sound.play()
-# 	if key == curses.KEY_DOWN: 	
-# 		pygame.init()
-# 		pygame.mixer.init()
-# 		sound = pygame.mixer.Sound("cartoon0121.wav")
-# 		sound.play()
+	if votacao_concluida == 1:
+		espera()
+		votacao_concluida = 0
 
-# 	time.sleep(5)
+	votos = {}
 
+	votos = np.zeros(8)
 
+	botao = ''
 
+	i = 0
+	while(i < 2):
+		print('Digite o numero do instrumento:')
+		print('1. Cavaco')
+		print('2. Chocalho')
+		botao = input()
 
+		os.system('cls' if os.name == 'nt' else 'clear')
 
+		if (int(botao) >= 1 and int(botao) <= 2):
+			votos[botao]+=1 
+			i+=1
+
+	votacao_concluida = 1
+
+	return votos
+
+def toca_instrumentos(tocando, instrumento=''):
+	if instrumento == 1:
+		cavaco.set_volume(1)
+
+	if instrumento == 2:
+		chocalho.set_volume(1)
+
+	if tocando == 1:
+		while True:
+			votos = votacao()
+
+			toca_instrumentos(2, np.argmax(votos))
+
+if __name__ == "__main__":
+    toca_instrumentos(1)
